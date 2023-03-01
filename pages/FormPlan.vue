@@ -91,7 +91,7 @@
           type="text"
           name="doing"
           v-model="plan.doing"
-          placeholder="Do/แผนปฏิบัติการ"
+          placeholder="Do/สิ่งที่ทำในแผนปฏิบัติการ"
           class="form-control form-control-lg"
         />
       </div>
@@ -202,7 +202,7 @@ export default {
       qualificationIds:Array,
       employee_id: this.$store.getters.myMember_id,
       planCareerId: "",
-      plan_career_id:"",
+      // plan_career_id:"",
       // planId:	qualificationId	doing leaning
       plan: {
         planId: "",
@@ -213,7 +213,6 @@ export default {
         leaning: "",
         plan_start_date:"",
         plan_end_date:"",
-        Plan_Career_id:"",
         
         
       },

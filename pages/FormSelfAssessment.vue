@@ -47,13 +47,13 @@
     </div>
     <div class="row">
       <div class="input-field col s4">
-        <label for="quanlification-id">QA-ID/รหัสคุณสมบัติ:</label>
+        <label for="quanlification-id">Qualification-ID/รหัสคุณสมบัติ:</label>
         <!-- <input type="text" v-model="selfAssessment.qualificationId" /> -->
         <input
           type="text"
           name="quanlification-id"
           v-model="selfAssessment.qualificationId"
-          placeholder="QA-ID/รหัสคุณสมบัติ"
+          placeholder="Qualification/คุณสมบัติ"
           required  disabled
           class="form-control form-control-lg"
         />
@@ -61,11 +61,10 @@
           <option value="" disabled selected>คุณสมบัติตามแผนอาชีพ:</option>
           <option
             v-for="career in career_qualifications"
-            :value="career.Plan_Career_id"
+            :value="career.qualificationId"
             :key="career.index"
           >
-            {{ career_qualification.qualificationId }}
-            {{ career_qualification.skill }}
+            {{ career.qualificationId }} {{ career.qualification_name }}
           </option>
         </select>
       </div>
@@ -102,35 +101,6 @@
       <div class="input-field col s4">
         <label for="self-assessment">SA/ประเมินตนเอง:</label>
         <!-- <input type="text" v-model="selfAssessment.assessment" /> -->
-        <input
-          type="text"
-          name="self-assessment"
-          v-model="selfAssessment.assessment"
-          placeholder="SA/ประเมินตนเอง"
-          class="form-control form-control-lg"
-        />
-        <div class="row">
-          <div class="input-field col s4">
-            <div class="form-group">
-              <input
-                type="radio"
-                value="Yes"
-                v-model="selfAssessment.assessment"
-              />
-              <label for="qualification_goal">Yes</label>
-            </div>
-          </div>
-          <div class="input-field col s4">
-            <div class="form-group">
-              <input
-                type="radio"
-                value="No"
-                v-model="selfAssessment.assessment"
-              />
-              <label for="qualification_goal">No</label>
-            </div>
-          </div>
-        </div>
         <select :size="4" v-model="selfAssessment.assessment">
           <option value="" disabled selected>ประเมินตนเอง:</option>
           <option value="1">ระดับ 1/รู้จักทักษะนี้เล็กน้อย</option>
@@ -215,9 +185,10 @@ export default {
       selfAssessment: {
         selfAssessmentId: "",
         qualificationId: "",
+        qualification_name:"",
         month: "มกราคม",
         assessment: "ํYes",
-        isVisible: false,
+        
       },
       isEdit: false,
       status: "Save/บันทึก",
@@ -232,7 +203,7 @@ export default {
       // this.selfAssessment.qualificationId = 0;
       this.selfAssessment.month = "";
       this.selfAssessment.assessment = "";
-      this.selfAssessment.isVisible = false;
+      
     },
     getAllUser() {
       console.log(" แสดงข้อมูลทั้งหมด ");
@@ -301,7 +272,7 @@ export default {
       console.log(" ข้อมูลอาชีพ ");
       var self = this;
       axios
-        .post("http://localhost/ICPScoreCard/api-career-qualification.php", {
+        .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
           action: "getEmpCareer",
           employee_id: this.employee_id,
         })
@@ -314,12 +285,13 @@ export default {
         });
     },
     getQualification() {
-      console.log(" แสดงข้อมูลคุณสมบัติ ");
+      console.log("แผนอาชีพ",this.planCareerId);
       var self = this;
       axios
-        .post("http://localhost/ICPScoreCard/api-career-qualification.php", {
+        .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
           action: "getCareer_Qualifiation",
-          career_id: this.planCareerId,
+          
+          plan_career_id: this.planCareerId,
         })
         .then(function (res) {
           console.log(res);
