@@ -156,8 +156,8 @@
           <th scope="col">PlanLearning-ID</th>
           <th scope="col">PlanCareer-ID</th>
           <th scope="col">Qualification-ID</th>
-          <th scope="col">Do</th>
           <th scope="col">Lean</th>
+          <th scope="col">Do</th>
           <th scope="col">PlanStartDate</th>
           <th scope="col">PlanEndDate</th>
 
@@ -168,8 +168,8 @@
           <td>{{ row.planId }}</td>
           <td>{{ row.planCareerId }}</td>
           <td>{{ row.qualificationId }}</td>
-          <td>{{ row.doing }}</td>
           <td>{{ row.leaning }}</td>
+          <td>{{ row.doing }}</td>
           <td>{{ row.plan_start_date }}</td>
           <td>{{ row.plan_end_date }}</td>
           <td>
@@ -213,6 +213,7 @@ export default {
         leaning: "",
         plan_start_date:"",
         plan_end_date:"",
+        planCareerId:""
         
         
       },
@@ -226,9 +227,12 @@ export default {
       this.isEdit = false;
       console.log("ยกเลิก");
       // this.plan.planId = 0;
-      // this.plan.qualificationId = 0;
+      this.planCareerId = "",
+      this.plan.qualificationId = "";
       this.plan.doing = "";
       this.plan.leaning = "";
+      this.plan.plan_start_date = "";
+      this.plan.plan_end_date = "";
       
     },
     getAllUser() {
@@ -344,7 +348,7 @@ export default {
         .then(function (response) {
           console.log(response);
           self.plan.planId = response.data.planId;
-          self.plan_career_id = response.data.planCareerId;
+          self.planCareerId = response.data.planCareerId;
           self.plan.qualificationId = response.data.qualificationId;
           self.plan.doing = response.data.doing;
           self.plan.leaning = response.data.leaning;

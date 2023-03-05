@@ -100,7 +100,7 @@
         <!-- <input type="text" v-model="qualification.qualification_name" /> -->
         <input
           type="text"
-          name="level"
+          name="target"
           v-model="qualification.target_id"
           placeholder="เป้าหมาย"
           class="form-control form-control-lg"

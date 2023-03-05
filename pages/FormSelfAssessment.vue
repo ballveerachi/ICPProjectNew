@@ -4,12 +4,12 @@
   <form @submit.prevent="submitForm" @reset.prevent="resetForm" method="post">
     <div class="row">
       <div class="input-field col s4">
-        <label for="selfAssessment-id"> selfAssessment-ID/รหัสประเมินตนเอง: </label>
+        <label for="self_assessment_id"> selfAssessment-ID/รหัสประเมินตนเอง: </label>
         <!-- <input type="text" v-model="selfAssessment.selfAssessmentId" /> -->
         <input
           type="text"
-          name="selfAssessmentId"
-          v-model="selfAssessment.selfAssessmentId"
+          name="self_assessment_id"
+          v-model="selfAssessment.self_assessment_id"
           placeholder="SA-ID/รหัสประเมินตนเอง"
           required  disabled
           class="form-control form-control-lg"
@@ -71,44 +71,36 @@
     </div>
     <div class="row">
       <div class="input-field col s4">
-        <label for="month">Month/เดือน-{{currentYear}}</label>
-        <!-- <input type="text" v-model="selfAssessment.month" /> -->
+        <label for="self_assessment_date">AssessmentDate/วันที่ประเมินตนเอง:</label>
+        <!-- <input type="text" v-model=self_assessment_date	" /> -->
         <input
           type="text"
-          name="month"
-          v-model="selfAssessment.month"
-          placeholder="Month/เดือน"
+          name="AassessmentDate"
+          v-model="self_assessment_date	"
+          placeholder="AssessmentDate/วันที่ประเมินตนเอง"
           class="form-control form-control-lg"
         />
-        <select :size="4" v-model="selfAssessment.month">
-          <option value="" disabled selected>ประเมินเดือน:</option>
-          <option value="มกราคม">มกราคม</option>
-          <option value="กุมภาพันธ์">กุมภาพันธ์</option>
-          <option value="มีนาคม">มีนาคม</option>
-          <option value="เมษายน">เมษายน</option>
-          <option value="พฤศภาคม">พฤศภาคม</option>
-          <option value="มิถุนายน">มิถุนายน</option>
-          <option value="กรกฏาคม">กรกฏาคม</option>
-          <option value="สิงหาคม">สิงหาคม</option>
-          <option value="กันยายน">กันยายน</option>
-          <option value="ตุลาคม">ตุลาคม</option>
-          <option value="พฤศจิกายน">พฤศจิกายน</option>
-          <option value="ธันวาคม">ธันวาคม</option>
-        </select>
       </div>
     </div>
     <div class="row">
       <div class="input-field col s4">
-        <label for="self-assessment">SA/ประเมินตนเอง:</label>
-        <!-- <input type="text" v-model="selfAssessment.assessment" /> -->
-        <select :size="4" v-model="selfAssessment.assessment">
-          <option value="" disabled selected>ประเมินตนเอง:</option>
-          <option value="1">ระดับ 1/รู้จักทักษะนี้เล็กน้อย</option>
-          <option value="2">ระดับ 2/เคยเรียนทักษะนี้มาบ้าง</option>
-          <option value="3">ระดับ 3/เคยใช้ทักษะนี้เป็นครั้งคราว</option>
-          <option value="4">ระดับ 4/ได้ใช้ทักษะนี้ประจําหรือในงาน</option>
-          <option value="5">
-            ระดับ 5/ปัจจุบันสามารถสอนทักษะนี้แก่ผู้อื่นได้
+        <label for="level">SelfAssessment/ประเมินตนเอง:</label>
+        <!-- <input type="text" v-model="qualification.qualification_name" /> -->
+        <input
+          type="text"
+          name="perform"
+          v-model="selfAssessment.perform_id"
+          placeholder="ระดับการประเมินตนเอง"
+          class="form-control form-control-lg"
+        />
+        <select :size="4" v-model="selfAssessment.perform_id">
+          <option value="" disabled selected>ระดับการประเมินตนเอง:</option>
+          <option
+            v-for="perform in performs"
+            :value="perform.perform_id"
+            :key="perform.index"
+          >
+            {{ perform.perform_name}}
           </option>
         </select>
       </div>
@@ -150,7 +142,7 @@
       </thead>
       <tbody>
         <tr v-for="row in selfAssessments" :key="row.selfAssessmentId">
-          <td>{{ row.selfAssessmentId }}</td>
+          <td>{{ row.self_assessment_id }}</td>
           <td>{{ row.qualificationId }}</td>
           <td>{{ row.month }}</td>
           <td>{{ row.assessment }}</td>
@@ -176,6 +168,7 @@ export default {
     return {
       message: "Form Self Acessment",
       currentYear: new Date().getFullYear(), 
+      performs:Array,
       selfAssessments: Array,
       selfAssessments_: Array,
       careers: Array,
@@ -183,11 +176,12 @@ export default {
       employee_id: this.$store.getters.myMember_id,
       planCareerId: "",
       selfAssessment: {
-        selfAssessmentId: "",
+        self_assessment_id: "",
         qualificationId: "",
         qualification_name:"",
-        month: "มกราคม",
-        assessment: "ํYes",
+        perform_id: "",
+        perform_name: "",
+        self_assessment_date: "",
         
       },
       isEdit: false,
@@ -225,18 +219,18 @@ export default {
         console.log("บันทึกข้อมูล");
         console.log("qualification:", this.selfAssessment);
         const newSelfAssessment = {
-          selfAssessmentId: this.selfAssessment.selfAssessmentId,
+          self_assessment_id: this.selfAssessment.self_assessment_id,
           qualificationId: this.selfAssessment.qualificationId,
-          month: this.selfAssessment.month,
-          assessment: this.selfAssessment.assessment,
-          isVisible: this.selfAssessment.isVisible,
+          perform_id: this.selfAssessment.perform_id,
+          self_assessment_date: this.selfAssessment.self_assessment_date,
+          
         };
         this.$emit("saveData", newSelfAssessment);
 
         axios
           .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
             action: "insert",
-            selfAssessmentId: this.selfAssessment.selfAssessmentId,
+            self_assessment_id: this.selfAssessment.self_assessment_id,
             qualificationId: this.selfAssessment.qualificationId,
             month: this.selfAssessment.month,
             assessment: this.selfAssessment.assessment,
@@ -253,7 +247,7 @@ export default {
         axios
           .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
             action: "update",
-            selfAssessmentId: this.selfAssessment.selfAssessmentId,
+            self_assessment_id: this.selfAssessment.self_assessment_id,
             qualificationId: this.selfAssessment.qualificationId,
             month: this.selfAssessment.month,
             assessment: this.selfAssessment.assessment,
@@ -267,6 +261,21 @@ export default {
             console.log(error);
           });
       }
+    },
+    getPerform() {
+      console.log(" ค่าประเมินตนเอง ");
+      var self = this;
+      axios
+        .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
+          action: "getPerform",
+        })
+        .then(function (res) {
+          self.performs = res.data;
+          console.log("perform:", self.performs);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     getCareer() {
       console.log(" ข้อมูลอาชีพ ");
@@ -301,18 +310,18 @@ export default {
           console.log(error);
         });
     },
-    editUser(selfAssessmentId) {
+    editUser(self_assessment_id) {
       this.status = "Update(อัพเดท)";
       this.isEdit = true;
       var self = this;
       axios
         .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
           action: "edit",
-          selfAssessmentId: selfAssessmentId,
+          self_assessment_id: self_assessment_id,
         })
         .then(function (response) {
           console.log(response);
-          self.selfAssessment.selfAssessmentId = response.data.selfAssessmentId;
+          self.selfAssessment.self_assessment_id = response.data.self_assessment_id;
           self.selfAssessment.qualificationId = response.data.qualificationId;
           self.selfAssessment.month = response.data.month;
           self.selfAssessment.assessment = response.data.assessment;
@@ -322,13 +331,13 @@ export default {
           console.log(error);
         });
     },
-    deleteUser(selfAssessmentId) {
-      if (confirm("คุณต้องการลบรหัส " + selfAssessmentId + " หรือไม่ ?")) {
+    deleteUser(self_assessment_id) {
+      if (confirm("คุณต้องการลบรหัส " + self_assessment_id + " หรือไม่ ?")) {
         var self = this;
         axios
           .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
             action: "delete",
-            selfAssessmentId: selfAssessmentId,
+            self_assessment_id: self_assessment_id,
           })
           .then(function (response) {
             console.log(response);
@@ -344,6 +353,7 @@ export default {
   created() {
     this.getAllUser();
     this.getCareer();
+    this.getPerform();
   },
 };
 
