@@ -23,14 +23,14 @@
         <input
           type="text"
           name="planCareerId"
-          v-model="planCareerId"
+          v-model="selfAssessment.Plan_Career_id"
           placeholder="CA-ID/รหัสอาชีพ"
           required  disabled
           class="form-control form-control-lg"
         />
         <select
           :size="4"
-          v-model="planCareerId"
+          v-model="selfAssessment.Plan_Career_id"
           :required="true"
           @change="getQualification()"
         >
@@ -52,19 +52,19 @@
         <input
           type="text"
           name="quanlification-id"
-          v-model="selfAssessment.qualificationId"
+          v-model="selfAssessment.qa_plan_career_id"
           placeholder="Qualification/คุณสมบัติ"
           required  disabled
           class="form-control form-control-lg"
         />
-        <select :size="4" v-model="selfAssessment.qualificationId">
+        <select :size="4" v-model="selfAssessment.qa_plan_career_id">
           <option value="" disabled selected>คุณสมบัติตามแผนอาชีพ:</option>
           <option
             v-for="career in career_qualifications"
-            :value="career.qualificationId"
+            :value="career.qa_plan_career_id"
             :key="career.index"
           >
-            {{ career.qualificationId }} {{ career.qualification_name }}
+            {{ career.qa_plan_career_id }} {{ career.qualification_name }}
           </option>
         </select>
       </div>
@@ -76,7 +76,7 @@
         <input
           type="text"
           name="AassessmentDate"
-          v-model="self_assessment_date	"
+          v-model="selfAssessment.self_assessment_date	"
           placeholder="AssessmentDate/วันที่ประเมินตนเอง"
           class="form-control form-control-lg"
         />
@@ -136,21 +136,23 @@
         <tr>
           <th scope="col">SA-ID</th>
           <th scope="col">QA-ID</th>
-          <th scope="col">Month</th>
+          <th scope="col">Assessment Date</th>
           <th scope="col">Self Assessment</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in selfAssessments" :key="row.selfAssessmentId">
+        <tr v-for="row in selfAssessments" :key="row.self_assessment_id">
           <td>{{ row.self_assessment_id }}</td>
-          <td>{{ row.qualificationId }}</td>
-          <td>{{ row.month }}</td>
-          <td>{{ row.assessment }}</td>
+          <td>{{ row.qa_plan_career_id }}</td>
+          <td>{{ row.self_assessment_date }}</td>
+          <td>{{ row.perform_id }}</td>
+          
+          
           <td>
-            <v-btn depressed color="#3366FF" @click="editUser(row.selfAssessmentId)">Edit</v-btn>
+            <v-btn depressed color="#3366FF" @click="editUser(row.self_assessment_id)">Edit</v-btn>
           </td>
           <td>
-            <v-btn depressed color="#FF3333" @click="deleteUser(row.selfAssessmentId)">Delete</v-btn>
+            <v-btn depressed color="#FF3333" @click="deleteUser(row.self_assessment_id)">Delete</v-btn>
           </td>
         </tr>
         <tr></tr>
@@ -182,6 +184,10 @@ export default {
         perform_id: "",
         perform_name: "",
         self_assessment_date: "",
+        planCareerId:"",
+        Plan_Career_id:"",
+        qa_plan_career_id:""
+        
         
       },
       isEdit: false,
@@ -195,8 +201,10 @@ export default {
       console.log("ยกเลิกการบันทึกข้อมูล");
       // this.selfAssessment.selfAssessmentId = 0;
       // this.selfAssessment.qualificationId = 0;
-      this.selfAssessment.month = "";
-      this.selfAssessment.assessment = "";
+      this.selfAssessment.qa_plan_career_id ="";
+      this.selfAssessment.Plan_Career_id ="";
+      this.selfAssessment.self_assessment_date = "";
+      this.selfAssessment.perform_id = "";
       
     },
     getAllUser() {
@@ -220,9 +228,9 @@ export default {
         console.log("qualification:", this.selfAssessment);
         const newSelfAssessment = {
           self_assessment_id: this.selfAssessment.self_assessment_id,
-          qualificationId: this.selfAssessment.qualificationId,
-          perform_id: this.selfAssessment.perform_id,
+          qa_plan_career_id: this.selfAssessment.qa_plan_career_id,
           self_assessment_date: this.selfAssessment.self_assessment_date,
+          perform_id: this.selfAssessment.perform_id,
           
         };
         this.$emit("saveData", newSelfAssessment);
@@ -231,9 +239,9 @@ export default {
           .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
             action: "insert",
             self_assessment_id: this.selfAssessment.self_assessment_id,
-            qualificationId: this.selfAssessment.qualificationId,
-            month: this.selfAssessment.month,
-            assessment: this.selfAssessment.assessment,
+            qa_plan_career_id: this.selfAssessment.qa_plan_career_id,
+            self_assessment_date: this.selfAssessment.self_assessment_date,
+            perform_id: this.selfAssessment.perform_id
           })
           .then((res) => {
             console.log(res);
@@ -248,9 +256,10 @@ export default {
           .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
             action: "update",
             self_assessment_id: this.selfAssessment.self_assessment_id,
-            qualificationId: this.selfAssessment.qualificationId,
-            month: this.selfAssessment.month,
-            assessment: this.selfAssessment.assessment,
+            qa_plan_career_id: this.selfAssessment.qa_plan_career_id,
+            self_assessment_date: this.selfAssessment.self_assessment_date,
+            perform_id: this.selfAssessment.perform_id
+            
           })
           .then((response) => {
             console.log(response);
@@ -294,13 +303,13 @@ export default {
         });
     },
     getQualification() {
-      console.log("แผนอาชีพ",this.planCareerId);
+      console.log("แผนอาชีพ",this.selfAssessment.Plan_Career_id);
       var self = this;
       axios
         .post("http://localhost/ICPScoreCard/api-self-assessment.php", {
           action: "getCareer_Qualifiation",
           
-          plan_career_id: this.planCareerId,
+          Plan_Career_id: this.selfAssessment.Plan_Career_id,
         })
         .then(function (res) {
           console.log(res);
@@ -322,9 +331,11 @@ export default {
         .then(function (response) {
           console.log(response);
           self.selfAssessment.self_assessment_id = response.data.self_assessment_id;
-          self.selfAssessment.qualificationId = response.data.qualificationId;
-          self.selfAssessment.month = response.data.month;
-          self.selfAssessment.assessment = response.data.assessment;
+          self.selfAssessment.Plan_Career_id = response.data.plan_career_id;
+          self.getQualification();
+          
+          self.selfAssessment.perform_id = response.data.perform_id,
+          self.selfAssessment.self_assessment_date =response.data.self_assessment_date,
           self.selfAssessments_ = response.data;
         })
         .catch(function (error) {
@@ -332,7 +343,7 @@ export default {
         });
     },
     deleteUser(self_assessment_id) {
-      if (confirm("คุณต้องการลบรหัส " + self_assessment_id + " หรือไม่ ?")) {
+      if (confirm("คุณต้องการลบรหัส " + 	self_assessment_id + " หรือไม่ ?")) {
         var self = this;
         axios
           .post("http://localhost/ICPScoreCard/api-self-assessment.php", {

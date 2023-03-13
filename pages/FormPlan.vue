@@ -18,26 +18,26 @@
     </div>
     <div class="row">
       <div class="input-field col s4">
-        <label for="career_plan-id">PlanCareer-ID/รหัสแผนอาชีพ:</label>
+        <label for="career_plan-id">Career-ID/รหัสแผนอาชีพ:</label>
         <!-- <input type="text" v-model="plan.planId" /> -->
         <input
           type="text"
           name="Career"
-          v-model="planCareerId"
+          v-model="plan.Plan_Career_id"
           placeholder="Career/อาชีพ"
           required  disabled
           class="form-control form-control-lg"
         />
         <select 
           :size="4"
-          v-model="planCareerId"
+          v-model="plan.Plan_Career_id"
           :required="true"
           @change="getQualification()"
         >
           <option value="" disabled selected>อาชีพ:</option>
           <option
             v-for="career in careers"
-            :value="career.Plan_Career_id"
+            :value="career.Plan_Career_id "
             :key="career.index"
           >
             {{ career.Plan_Career_id }} {{ career.career }}
@@ -53,19 +53,19 @@
         <input
           type="text"
           name="qualification"
-          v-model="plan.qualificationId"
+          v-model="plan.qa_plan_career_id"
           placeholder="Qualification/คุณสมบัติ"
           required  disabled
           class="form-control form-control-lg"
         />
-        <select :size="4" v-model="plan.qualificationId">
+        <select :size="4" v-model="plan.qa_plan_career_id">
           <option value="" disabled selected>กำหนดคุณสมบัติ:</option>
           <option
             v-for="career in career_qualifications"
-            :value="career.qualificationId"
+            :value="career.qa_plan_career_id"
             :key="career.index"
           >
-             {{ career.qualificationId }} {{ career.qualification_name }}
+             {{ career.qa_plan_career_id }} {{ career.qualification_name }}
           </option>
         </select>
       </div>
@@ -154,8 +154,7 @@
       <thead>
         <tr>
           <th scope="col">PlanLearning-ID</th>
-          <th scope="col">PlanCareer-ID</th>
-          <th scope="col">Qualification-ID</th>
+          <th scope="col">QA-ID</th>
           <th scope="col">Lean</th>
           <th scope="col">Do</th>
           <th scope="col">PlanStartDate</th>
@@ -166,8 +165,7 @@
       <tbody>
         <tr v-for="row in plans" :key="row.index">
           <td>{{ row.planId }}</td>
-          <td>{{ row.planCareerId }}</td>
-          <td>{{ row.qualificationId }}</td>
+          <td>{{ row.qa_plan_career_id }}</td>
           <td>{{ row.leaning }}</td>
           <td>{{ row.doing }}</td>
           <td>{{ row.plan_start_date }}</td>
@@ -202,6 +200,7 @@ export default {
       qualificationIds:Array,
       employee_id: this.$store.getters.myMember_id,
       planCareerId: "",
+      
       // plan_career_id:"",
       // planId:	qualificationId	doing leaning
       plan: {
@@ -213,7 +212,9 @@ export default {
         leaning: "",
         plan_start_date:"",
         plan_end_date:"",
-        planCareerId:""
+        planCareerId:"",
+        Plan_Career_id:"",
+        
         
         
       },
@@ -227,12 +228,14 @@ export default {
       this.isEdit = false;
       console.log("ยกเลิก");
       // this.plan.planId = 0;
-      this.planCareerId = "",
+      this.plan.qa_plan_career_id = "",
       this.plan.qualificationId = "";
       this.plan.doing = "";
       this.plan.leaning = "";
       this.plan.plan_start_date = "";
       this.plan.plan_end_date = "";
+      this.plan.Plan_Career_id ="";
+     
       
     },
     getAllUser() {
@@ -267,15 +270,15 @@ export default {
         });
     },
     getQualification() {
-      console.log("แผนอาชีพ",this.planCareerId);
+      console.log("แผนอาชีพ",this.plan.Plan_Career_id);
       var self = this;
       axios
         .post("http://localhost/ICPScoreCard/api-career-qualification.php", {
           action: "getCareer_Qualifiation",
-          plan_career_id: this.planCareerId,
+          Plan_Career_id: this.plan.Plan_Career_id,
         })
         .then(function (res) {
-          console.log(res);
+          console.log("ข้อมูลคุณสมบัติ",res.data);
           self.career_qualifications = res.data;
         })
         .catch(function (error) {
@@ -285,10 +288,10 @@ export default {
     submitForm() {
       if (!this.isEdit) {
         console.log("บันทึก");
-        console.log("Form Plan Career:", this.planCareer);
+        console.log("Form Plan Career:", this.plan.qa_plan_career_id);
         const newPlan = {
           planId: this.plan.planId,
-          qualificationId: this.plan.qualificationId,
+          qa_plan_career_id: this.plan.qa_plan_career_id,
           doing: this.plan.doing,
           leaning: this.plan.leaning,
           plan_start_date: this.plan.plan_start_date,
@@ -301,7 +304,7 @@ export default {
           .post("http://localhost/ICPScoreCard/api-plan.php", {
             action: "insert",
             planId: this.plan.planId,
-            qualificationId: this.plan.qualificationId,
+            qa_plan_career_id: this.plan.qa_plan_career_id,
             doing: this.plan.doing,
             leaning: this.plan.leaning,
             plan_start_date: this.plan.plan_start_date,
@@ -320,7 +323,7 @@ export default {
           .post("http://localhost/ICPScoreCard/api-plan.php", {
             action: "update",
             planId: this.plan.planId,
-            qualificationId: this.plan.qualificationId,
+            qa_plan_career_id: this.plan.qa_plan_career_id,
             doing: this.plan.doing,
             leaning: this.plan.leaning,
             plan_start_date: this.plan.plan_start_date,
@@ -348,8 +351,11 @@ export default {
         .then(function (response) {
           console.log(response);
           self.plan.planId = response.data.planId;
-          self.planCareerId = response.data.planCareerId;
-          self.plan.qualificationId = response.data.qualificationId;
+          self.plan.Plan_Career_id = response.data.plan_career_id;
+          self.getQualification();
+          
+          self.plan.qualification_name = response.data.qualification_name;
+          self.plan.qa_plan_career_id = response.data.qa_plan_career_id;
           self.plan.doing = response.data.doing;
           self.plan.leaning = response.data.leaning;
           self.plan.plan_start_date = response.data.plan_start_date;
